@@ -37,6 +37,6 @@ class Customer(BaseModel):
 
     @validator('email')
     def email(cls, value):
-        if not value.endswith('@example.com'):
-            raise ValueError('Only example.com emails are allowed')
+        if not value.endswith('@email.com'):
+            raise ValueError('Error')
         return value
