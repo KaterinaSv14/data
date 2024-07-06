@@ -1,0 +1,20 @@
+import requests
+from bs4 import BeautifulSoup
+
+response = requests.get('https://bank.gov.ua/ua/markets/exchangerates')
+soup = BeautifulSoup(response.text, 'html.parser')
+
+results = {}
+table = soup.find('table', id='exchangeRates')
+
+curs = table.find_all('tr')
+
+for curr in curs:
+    course = curr.find_all('td')
+    if len(course) >= 5:
+        currency = course[1].text.strip()
+        money = course[4].text.strip()
+        results[currency] = money
+
+for currency, money in results.items():
+    print(currency, '-', money)
