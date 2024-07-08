@@ -1,0 +1,27 @@
+import telebot
+import requests
+
+API_TOKEN = '6594700995:AAFLXikhb3-1-kGgB9HZB9nfyrBxOaB0xMg'
+OPENWEATHERMAP_API_KEY = 'c5b973bda0f7da3e1d6ec6aa804a997c'
+bot = telebot.TeleBot(API_TOKEN)
+
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.reply_to(message, 'Привіт! Введіть /weather та назву міста, щоб дізнатися погоду.')
+
+
+@bot.message_handler(commands=['weather'])
+def weather(message):
+    try:
+        city = message.text.split()[1]
+        url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHERMAP_API_KEY}&units=metric'
+        response = requests.get(url)
+        data = response.json()
+        weather = f'Погода в місті {city}: {data['weather'][0]['description']}. Температура: {data['main']['temp']}`C'
+        bot.reply_to(message, weather)
+    except:
+        bot.reply_to(message, 'Не вдалося знайти погоду для вказаного міста.')
+
+
+bot.polling()
